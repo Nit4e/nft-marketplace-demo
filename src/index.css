@@ -7,11 +7,11 @@ body {
   /*font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;*/
-  font-family: 'Open Sans',sans-serif;
+  font-family: 'Popins',sans-serif;
   /*font-family: 'M PLUS 1p', sans-serif;*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: radial-gradient(circle farthest-side, #FB7185, #831843);
+  background: radial-gradient(circle farthest-side, #7c71e2, #0b0132);
   background-size: 120% 300%;
   animation-duration: 3s;
   animation-timing-function: linear;
