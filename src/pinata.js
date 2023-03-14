@@ -1,6 +1,6 @@
 //require('dotenv').config();
-const key = "de4c82651ea948648c9b";
-const secret = "9d8218be6995a319a6aba16842f2586e63d9716eb80ea86a17804af9066dc812";
+const key = "<PINATA_API_KEY>";
+const secret = "<PINATA_API_SECRET>";
 
 const axios = require('axios');
 const FormData = require('form-data');
