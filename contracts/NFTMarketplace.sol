@@ -87,7 +87,12 @@ contract NFTMarketplace is ERC721URIStorage {
         //Make sure the sender sent enough ETH to pay for listing
         require(msg.value == listPrice, "Hopefully sending the correct price");
         //Just sanity check
-        require(price > 0, "Make sure the price isn't negative");
+        require(price >= 0, "The price cannot be negative, enter 0 for default price");
+
+        //Set the price to 0 if it was not provided
+        // if (price == 0) {
+        //     price = 0;
+        // }
 
         //Update the mapping of tokenId's to Token details, useful for retrieval functions
         idToListedToken[tokenId] = ListedToken(
