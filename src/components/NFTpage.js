@@ -1,9 +1,8 @@
 import Navbar from "./Navbar";
-import axie from "../tile.jpeg";
 import { useLocation, useParams } from 'react-router-dom';
 import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NFTPage (props) {
 
@@ -67,6 +66,24 @@ async function buyNFT(tokenId) {
     }
 }
 
+async function updatePrice(_listPrice) {
+    try {
+        const ethers = require("ethers");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
+        const tokenId = data.tokenId;
+        const priceInWei = ethers.utils.parseUnits(_listPrice, 'ether');
+        const tx = await contract.updateListPrice(priceInWei, {value: priceInWei});
+        await tx.wait();
+        alert("Updated sucessfully!");
+        setNewPrice({ ..._listPrice, setNewPrice: _listPrice });
+    } catch (e) {
+        console.log(e);
+        updateMessage("Price update failed.");
+    }
+}
+
 async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -75,15 +92,28 @@ async function handleSubmit(e) {
       const signer = provider.getSigner();
       let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
       const newPriceInWei = ethers.utils.parseUnits(newPrice, "ether");
-      await contract.updateListPrice(tokenId, newPriceInWei);
-      setNewPrice("");
-      alert("Price updated!");
+      await contract.updateListPrice(newPriceInWei);
+
+    //   setNewPrice(newPrice);
+    //   localStorage.setItem("newPrice", newPrice);
+    //   setNewPrice({...newPrice, setNewPrice: newPrice})
+    //   setNewPrice({...newPrice, setNewPrice: newPrice});
+      alert("Price updated sucessfully!");
+      updateData({ ...data, price: newPriceInWei });
+      
       document.getElementById("editForm").style.display = "none";
-      getNFTData(tokenId);
+    //   getNFTData(tokenId);
     } catch (e) {
       alert("Error updating price: " + e.message);
     }
   }
+
+  useEffect(() => {
+    const savedPrice = localStorage.getItem("newPrice");
+    if (savedPrice) {
+      setNewPrice(savedPrice);
+    }
+  }, []);
 
     const params = useParams();
     const tokenId = params.tokenId;
@@ -165,17 +195,19 @@ async function etidPrice() {
                     zIndex: 999,
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" 
                 }} className="p-80">
-                    <form onSubmit={handleSubmit} className="bg-zinc-100 shadow-md
+                    <form className="bg-zinc-100 shadow-md
                         rounded px-20 pt-10 pb-20 mb-10 flex justify-center">
                         <label className="mx-3 border-2 border-gray-300 shadow-md p-4">
                             <div className=""> New Price: </div>
                             <input type="number" classname="border-2 border-gray-300 shadow-md p-4"
-                                step="0.01" value={newPrice}
-                                onChange={(e) => setNewPrice(e.target.value)} required />
+                                step="0.01"
+                                value={newPrice} onChange={(e) => setNewPrice(e.target.value)}
+                                />
                         </label>
                         <div className="flex flex-col">
                             <button type="submit" className="enableEthereumButton bg-blue-500 hover:bg-blue-700
-                                text-white font-bold py-2 px-4 rounded text-sm m-3">
+                                text-white font-bold py-2 px-4 rounded text-sm m-3"
+                                onClick={handleSubmit}>
                             Update Price
                             </button>
                             <button type="button" className="enableEthereumButton bg-pink-500 hover:bg-pink-600
@@ -186,13 +218,6 @@ async function etidPrice() {
                         </div>
                     </form>
                 </div>
-                {/* <div className="form-popup" id="editForm">
-                    <form>
-                        <div> {data.name} </div>
-                        <div> {data.description} </div>
-                        <div> {data.price} </div>
-                    </form>
-                </div> */}
             </div>
         </div>
     )

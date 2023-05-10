@@ -61,7 +61,7 @@ export default function SellNFT () {
             //After adding your Hardhat network to your metamask, this code will get providers and signers
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
-            updateMessage("Please wait.. uploading (upto 5 mins)")
+            updateMessage("Please wait.. uploading (up to 5 mins)")
 
             //Pull the deployed contract instance
             let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer)
